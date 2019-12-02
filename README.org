@@ -5,6 +5,6 @@ Code 2019. They were developed under OpenBSD and use GNU Makefiles for
 testing.
 
 
-** Licence
+** License
 
 All code contained within is licensed under the terms of the ISC License.
