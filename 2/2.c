@@ -19,12 +19,12 @@ struct memory_s {
 
 
 void usage() {
-  printf("usage %s [-f target_velocity]\n", getprogname());
+  printf("usage %s [-d] [-f target_velocity]\n", getprogname());
   exit(EXIT_FAILURE);
 }
 
 
-struct memory_s load_memory() {
+struct memory_s read_dump() {
   int index;
   char cur_int[4], cur_char;
 
@@ -42,9 +42,6 @@ struct memory_s load_memory() {
       strlcpy(cur_int, "", 4);
       ++index;
     }
-    else {
-      continue;
-    }
   }
 
   memory.length = index;
@@ -53,7 +50,7 @@ struct memory_s load_memory() {
 }
 
 
-struct memory_s crunch_gravity_assist(struct memory_s memory) {
+struct memory_s run_vm(struct memory_s memory) {
   int opcode, p1, p2, p3;
   for (int i = 0; i < memory.length; i += 4) {
     opcode = memory.data[i];
@@ -75,21 +72,27 @@ struct memory_s crunch_gravity_assist(struct memory_s memory) {
 
 int main(int argc, char *argv[]) {
   struct memory_s memory, memory_bak;
-  int ch, find;
-  int target_velocity;
+  int ch, find, target_velocity, dump;
 
-  find = target_velocity = 0;
-  while ((ch = getopt(argc, argv, "hf:")) != -1) {
+  /* Initialize options */
+  dump = find = target_velocity = 0;
+
+  while ((ch = getopt(argc, argv, "dhf:")) != -1) {
     switch (ch) {
+    case 'd':
+      dump = true;
+      break;
     case 'h':
       usage();
+      break;
     case 'f':
       find = true;
       sscanf(optarg, "%d", &target_velocity);
+      break;
     }
   }
 
-  memory = load_memory();
+  memory = read_dump();
 
   if (find) {
     /* Part 2: Find noun and verb for gravity assist */
@@ -98,7 +101,7 @@ int main(int argc, char *argv[]) {
 	memory_bak = memory;
 	memory_bak.data[1] = i;
 	memory_bak.data[2] = j;
-	memory_bak = crunch_gravity_assist(memory_bak);
+	memory_bak = run_vm(memory_bak);
 	if (memory_bak.data[0] == target_velocity) {
 	  printf("%d%d\n", i, j);
 	  break;
@@ -109,8 +112,18 @@ int main(int argc, char *argv[]) {
     /* Part 1: Repair alarm 1202 */
     memory.data[1] = 12;
     memory.data[2] = 2;
-    memory = crunch_gravity_assist(memory);
+    memory = run_vm(memory);
     printf("%d\n", memory.data[0]);
+  }
+
+  if (dump) {
+    /* Dump memory to a format suitable for loading */
+    for (int i = 0; i < memory.length; ++i) {
+      if (i > 0)
+	printf(",");
+      printf("%d", memory.data[i]);
+    }
+    printf("\n");
   }
   
   return EXIT_SUCCESS;
