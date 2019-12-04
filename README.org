@@ -1,8 +1,6 @@
 * Advent of Code 2019
 
-This repository contains my solutions for the Advent of
-Code 2019. They were developed under OpenBSD and use GNU Makefiles for
-testing.
+This repository contains my solutions for the Advent of Code 2019. They are tested on OpenBSD -CURRENT. The Makefiles are the GNU Make dialect for now.
 
 
 ** License
