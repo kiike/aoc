@@ -1,0 +1,7 @@
+break 94
+commands
+printf "pointer=%d\tcontext=\t%d\t%d\t%d\t%d\n", pointer, memory.data[pointer], memory.data[pointer+1], memory.data[pointer+2], memory.data[pointer+3]
+printf "\t\toperation=\t%d\t%d\t%d\t%d\n", opcode, p1, p2, p3
+end
+run < input01
+ 
